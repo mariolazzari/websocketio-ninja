@@ -1,32 +1,36 @@
-// client connection
-var socket = io.connect('http://localhost:3000'); // io da script in index.html
+// Client connection
+const socket = io.connect("http://localhost:3000"); // io from script in index.html
 
-// dom query
-var output = document.getElementById('output');
-var feedback = document.getElementById('feedback');
-var handle = document.getElementById('handle');
-var message = document.getElementById('message');
-var send = document.getElementById('send');
+// DOM elements
+const output = document.getElementById("output");
+let feedback = document.getElementById("feedback");
+let handle = document.getElementById("handle");
+let message = document.getElementById("message");
+let send = document.getElementById("send");
 
-// events
-send.addEventListener('click', () => {
-    socket.emit('chat', { 
-        message: message.value, 
-        handle: handle.value 
-    });
+// Raise chat event
+send.addEventListener("click", () => {
+  socket.emit("chat", {
+    message: message.value,
+    handle: handle.value
+  });
 });
 
-message.addEventListener('keypress', () => {
-    console.log('press');
-    socket.emit('typing', handle.value);
-})
-
-// listen event
-socket.on('chat', data => {
-    feedback.innerHTML = ''; 
-    output.innerHTML += '<p>' + data.handle + ' : ' + data.message + '</p>';
+// Raise type event
+message.addEventListener("keypress", () => {
+  console.log("press");
+  socket.emit("typing", handle.value);
 });
 
-socket.on('typing', data => {
-    feedback.innerHTML = '<p><em>' + data + '<em/> is typing a message...</p>';
+// Subscribe chat event
+socket.on("chat", data => {
+  feedback.innerHTML = "";
+  output.innerHTML += "<p>" + data.handle + " : " + data.message + "</p>";
 });
+
+// Subscribe type event
+socket.on(
+  "typing",
+  data =>
+    (feedback.innerHTML = "<p><em>" + data + "<em/> is typing a message...</p>")
+);
